@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "./useAxiosPublic";
 import { ProductsApiResponse } from "@/lib/types";
 
+
 const useAllProducts = (page: number = 1, limit: number = 12) => {
   const axiosPublic = useAxiosPublic();
   

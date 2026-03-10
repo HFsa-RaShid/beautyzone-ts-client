@@ -74,3 +74,42 @@ export type ApiResponse<T> = {
   error?: string;
 };
 
+export interface ProductPayload {
+  name: string;
+  category: string;
+  price: number;
+  costPrice: number;
+  stock: number;
+  details: string;
+  images: string[];
+}
+
+
+// Shared domain types এ নতুন যুক্ত করুন
+
+export type OrderItem = {
+  productId: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+};
+
+export type Customer = {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  postcode: string;
+};
+
+export type Order = {
+  _id: string;
+  transactionId: string;
+  items: OrderItem[];
+  amount: number;
+  customer: Customer;
+  paidStatus: boolean;
+  orderDate: string;
+};

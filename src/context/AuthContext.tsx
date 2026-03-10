@@ -1,53 +1,50 @@
+
+
 "use client";
 
-import { createContext, useEffect, useState, useContext, ReactNode } from "react";
-
+import { createContext, useEffect, useState, useContext, ReactNode, useCallback } from "react";
 import { AuthResponse, User } from "@/lib/types";
 import useAxiosPublic from "@/hooks/useAxiosPublic";
-// আপনার আগে থেকে তৈরি করা types ফাইল থেকে
 
 interface AuthContextType {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
   loading: boolean;
-  // Promise<any> এর পরিবর্তে Promise<AuthResponse> ব্যবহার করুন
   registerUser: (name: string, email: string, password: string) => Promise<AuthResponse>;
   loginUser: (email: string, password: string) => Promise<AuthResponse>;
   logout: () => Promise<void>;
 }
 
-// createContext এর জন্য প্রারম্ভিক মান (Initial Value)
 export const AuthContext = createContext<AuthContextType | null>(null);
 
-// AuthProvider এর Props টাইপ
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const axiosPublic = useAxiosPublic();
 
-  useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const res = await axiosPublic.get("/api/auth/current-user");
-        // console.log(res.data.data?.user)
-        if (res.data.data?.user) {
-          setUser(res.data.data.user);
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
-        console.log(error)
+
+  const fetchCurrentUser = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await axiosPublic.get("/api/auth/current-user");
+      if (res.data?.data?.user) {
+        setUser(res.data.data.user);
+      } else {
         setUser(null);
-      } finally {
-        setLoading(false);
       }
-    };
-    checkUser();
-  }, [axiosPublic]);
+    } catch (error) {
+        console.log(error)
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  }, [axiosPublic]); 
+
+ 
+  useEffect(() => {
+    fetchCurrentUser();
+  }, [fetchCurrentUser]);
+
 
   const authInfo: AuthContextType = {
     user,
@@ -55,17 +52,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     loading,
     registerUser: async (name, email, password) => {
       const res = await axiosPublic.post("/api/auth/register", { name, email, password });
-      setUser(res.data.user);
+      await fetchCurrentUser(); // লগইন হওয়ার পর স্টেট রিফ্রেশ করুন
       return res.data;
     },
     loginUser: async (email, password) => {
       const res = await axiosPublic.post("/api/auth/login", { email, password });
-      setUser(res.data.user);
+      await fetchCurrentUser(); // লগইন হওয়ার পর স্টেট রিফ্রেশ করুন
       return res.data;
     },
     logout: async () => {
       await axiosPublic.post("/api/auth/logout");
-      setUser(null);
+      setUser(null); // স্টেট ক্লিয়ার করা
     },
   };
 
@@ -76,10 +73,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   );
 };
 
-export const useAuth = (): AuthContextType => {
+export const useAuth = () => {
   const auth = useContext(AuthContext);
-  if (!auth) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
+  if (!auth) throw new Error("useAuth must be used within an AuthProvider");
   return auth;
 };
