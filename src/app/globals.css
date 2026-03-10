@@ -1,26 +1,175 @@
+/* Fonts Import */
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Raleway:wght@300;400;500;600;700;800&display=swap");
+
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+
+html, body {
+  font-family: 'Raleway';
+  color: #1a1a1a;
+  background-color: #ffffff;
+  -webkit-font-smoothing: antialiased;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Titles Style */
+.section-title {
+  font-size: 24px; 
+  font-weight: 500;
+  color: #1a1a1a;
+  margin-bottom: 1rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+.sub-section-title {
+  font-size: 20px;
+  color: #1a1a1a;
+  margin-bottom: 0.75rem;
+}
+
+/* Background Colors */
+.bg-primary { background-color: #b06d72; }
+.bg-secondary { background-color: #FFEEF3; } 
+.bg-beige { background-color: #F5E9DA; }
+.bg-brand-black { background-color: #1a1a1a; }
+.bg-brand-gray { background-color: #f9f9f9; }
+
+/* Text Colors */
+.text-primary { color: #b06d72; }
+.text-secondary { color: #e8a5a9; }
+.text-brand-black { color: #1a1a1a; }
+
+/* Section Spacing */
+.section-padding {
+  padding: 5rem 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .section-padding {
+    padding: 6rem 3rem;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Buttons */
+.btn-primary {
+  background-color: #1a1a1a;
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.3s;
+  cursor: pointer;
+  border: none;
+}
+.btn-primary:hover {
+  background-color: #b06d72;
+}
+
+.btn-view-all {
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: none;
+  border : none
+}
+.btn-view-all:hover {
+  color: #b06d72;
+  border-color: #b06d72;
+}
+
+/* Card Style & Hover Effect */
+.card-image-wrapper {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background-color: #f9f9f9;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.05);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.card-image-wrapper:hover .card-overlay {
+  opacity: 1;
+}
+
+.btn-cart-center {
+  position: absolute;
+  background-color: white;
+  color: #1a1a1a;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: all 0.3s;
+  z-index: 10;
+  border: none;
+  cursor: pointer;
+}
+
+.card-image-wrapper:hover .btn-cart-center {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.btn-cart-center:hover {
+  background-color: #1a1a1a;
+  color: white;
+}
+
+/* Form & Input */
+.input-label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #9ca3af;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.input-field:focus {
+  border-color: #b06d72;
+}
+
+/* Order Summary */
+.order-summary-box {
+  background-color: #f5e9da;
+  padding: 2rem;
+  border-radius: 2px;
+}
+
+.swiper-slide {
+    height: auto !important;
+  }
+  /* .swiper-slide img {
+    height: 700px !important;
+    width: 100% !important;
+    object-fit: cover !important;
+  } */
+
+  .swiper-slide img {
+    object-fit: cover !important;
 }
