@@ -52,17 +52,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     loading,
     registerUser: async (name, email, password) => {
       const res = await axiosPublic.post("/api/auth/register", { name, email, password });
-      await fetchCurrentUser(); // লগইন হওয়ার পর স্টেট রিফ্রেশ করুন
+      await fetchCurrentUser();
       return res.data;
     },
     loginUser: async (email, password) => {
       const res = await axiosPublic.post("/api/auth/login", { email, password });
-      await fetchCurrentUser(); // লগইন হওয়ার পর স্টেট রিফ্রেশ করুন
+      await fetchCurrentUser();
       return res.data;
     },
     logout: async () => {
       await axiosPublic.post("/api/auth/logout");
-      setUser(null); // স্টেট ক্লিয়ার করা
+      setUser(null); 
     },
   };
 

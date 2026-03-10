@@ -48,7 +48,7 @@ const ContactUs = () => {
               </button>
             </form>
           </div>
-          <div className="md:w-1/2 relative min-h-[400px]">
+          <div className="md:w-1/2 relative min-h-100">
             <Image src="/images/contact/contact1.jpg" alt="Contact" fill className="object-cover rounded-sm" />
           </div>
         </section>
@@ -74,7 +74,7 @@ const ContactUs = () => {
 
         {/* FAQ Section */}
         <section className="flex flex-col md:flex-row items-stretch pb-20">
-          <div className="md:w-2/5 relative min-h-[300px]">
+          <div className="md:w-2/5 relative min-h-75">
             <Image src="/images/contact/contact2.jpg" alt="FAQ" fill className="object-cover" />
           </div>
           <div className="md:w-3/5 p-6 md:p-12 bg-gray-50">

@@ -3,7 +3,7 @@
 import React from 'react';
 import { DollarSign, Package, Users, ShoppingBag } from 'lucide-react';
 
-// কার্ডগুলোর ডাটা স্ট্রাকচার টাইপ
+
 interface StatCard {
   label: string;
   value: string;

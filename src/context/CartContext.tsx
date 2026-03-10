@@ -24,7 +24,7 @@ type CartAction =
   | { type: "REMOVE_ITEM"; payload: string }
   | { type: "CLEAR_CART" };
 
-// ৩. Context টাইপ
+
 interface CartContextType extends CartState {
   addToCart: (product: Product, quantity?: number) => void;
   updateQuantity: (productId: string, amount: number) => void;
