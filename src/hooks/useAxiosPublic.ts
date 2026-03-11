@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 
 const axiosPublic: AxiosInstance = axios.create({
-  baseURL: "https://beautyzone-ts-client-ve1e.vercel.app",
+  baseURL: "https://beautyzone-ts-server.vercel.app",
   withCredentials: true,
 });
 
