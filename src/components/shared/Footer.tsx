@@ -16,8 +16,8 @@ const Footer: React.FC = () => {
             <Image 
               src="/images/logo.png" 
               alt="Seoul Mirage Logo" 
-              width={150} 
-              height={64} 
+              width={100} 
+              height={100} 
               className="w-auto h-16 mx-auto md:mx-0"
             />
           </Link>

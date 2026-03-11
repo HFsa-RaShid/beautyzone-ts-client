@@ -38,9 +38,9 @@ const Navbar = () => {
           <Link href="/" className="cursor-pointer flex items-center">
             <Image
               src="/images/logo.png"
-              alt="Sakura"
-              width={60}
-              height={60}
+              alt="logo"
+              width={100}
+              height={100}
               className="h-10 md:h-12 w-auto mr-2"
               priority
             />
