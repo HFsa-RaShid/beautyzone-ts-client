@@ -51,47 +51,45 @@ const ProfilePage = () => {
 
   const [loading, setLoading] = useState(false);
 
+  const handleImageUpload = async (file: File) => {
+    try {
+      if (!process.env.NEXT_PUBLIC_IMGBB_KEY)
+        throw new Error("IMGBB key missing");
 
+      const formData = new FormData();
+      formData.append("image", file);
 
-const handleImageUpload = async (file: File) => {
-  try {
-    if (!process.env.NEXT_PUBLIC_IMGBB_KEY) throw new Error("IMGBB key missing");
+      // Upload to imgbb
+      const res = await fetch(
+        `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_KEY}`,
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+      const data = await res.json();
 
-    const formData = new FormData();
-    formData.append("image", file);
+      if (!data.success) throw new Error("Image upload failed");
 
-    // Upload to imgbb
-    const res = await fetch(`https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_KEY}`, {
-      method: "POST",
-      body: formData,
-    });
-    const data = await res.json();
+      const imageUrl = data.data?.url || data.data?.display_url;
+      if (!imageUrl) throw new Error("No image URL returned from IMGBB");
 
-    if (!data.success) throw new Error("Image upload failed");
+      setProfileData((prev) => ({ ...prev, photo: imageUrl }));
 
-    const imageUrl = data.data?.url || data.data?.display_url;
-    if (!imageUrl) throw new Error("No image URL returned from IMGBB");
+      const updateRes = await axiosPublic.put(
+        "/api/auth/update-profile",
+        { photo: imageUrl },
+        { headers: { "Content-Type": "application/json" } },
+      );
 
-    
-    setProfileData((prev) => ({ ...prev, photo: imageUrl }));
+      setUser(updateRes.data.data.user);
 
-    
-    const updateRes = await axiosPublic.put(
-      "/api/auth/update-profile",
-      { photo: imageUrl },
-      { headers: { "Content-Type": "application/json" } }
-    );
-
-
-    setUser(updateRes.data.data.user);
-
-    toast.success("Profile image updated successfully!");
-
-  } catch (err) {
-    console.error(err);
-    toast.error("Image upload failed");
-  }
-};
+      toast.success("Profile image updated successfully!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Image upload failed");
+    }
+  };
 
   // UPDATE PROFILE
 
@@ -111,11 +109,11 @@ const handleImageUpload = async (file: File) => {
         },
       });
 
-    //   if (res.data.success) {
-        toast.success("Profile updated successfully");
-        setUser(res.data.data.user);
-        
-    //   }
+      //   if (res.data.success) {
+      toast.success("Profile updated successfully");
+      setUser(res.data.data.user);
+
+      //   }
     } catch {
       toast.error("Profile update failed");
     }
@@ -139,10 +137,8 @@ const handleImageUpload = async (file: File) => {
         },
       );
 
-    
-        toast.success("Address updated");
-        setUser(res.data.data.user);
-
+      toast.success("Address updated");
+      setUser(res.data.data.user);
     } catch {
       toast.error("Address update failed");
     }
@@ -151,40 +147,36 @@ const handleImageUpload = async (file: File) => {
   };
 
   // CHANGE PASSWORD
+const changePassword = async () => {
+  if (passwordData.newPassword !== passwordData.confirmPassword) {
+    toast.error("Passwords do not match");
+    return;
+  }
 
-  const changePassword = async () => {
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
-
-    try {
-      const res = await axiosPublic.put(
-        "/api/auth/change-password",
-        {
-          currentPassword: passwordData.currentPassword,
-          newPassword: passwordData.newPassword,
+  try {
+    const res = await axiosPublic.put(
+      "/api/auth/change-password",
+      JSON.stringify({
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+      }),
+      {
+        headers: {
+          "Content-Type": "application/json",
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
-
-      if (res.data.success) {
-        toast.success("Password changed");
-
-        setPasswordData({
-          currentPassword: "",
-          newPassword: "",
-          confirmPassword: "",
-        });
+        withCredentials: true,
       }
-    } catch {
-      toast.error("Password change failed");
+    );
+
+    if (res.data) {
+      toast.success("Password changed successfully");
+      setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
     }
-  };
+  } catch (err) {
+    console.log(err)
+  }
+};
+
 
   return (
     <div className="container mx-auto px-10 py-10 max-w-5xl">
@@ -200,9 +192,9 @@ const handleImageUpload = async (file: File) => {
         {/* IMAGE */}
 
         <div className="flex items-center gap-6 mb-8">
-          <div className="relative">
+          <div className="relative border p-2 rounded-full">
             <Image
-              src={profileData.photo || "/images/logo.png"}
+              src={profileData.photo}
               alt="profile"
               width={96}
               height={96}

@@ -34,14 +34,14 @@ const Navbar = () => {
     <nav className="w-full bg-white sticky top-0 z-50 border-b border-gray-100 font-raleway">
       <div className="container mx-auto flex items-center justify-between py-4 px-6 md:px-10">
         {/* Left: Logo & Desktop Menu */}
-        <div className="flex items-center gap-10">
+        <div className="flex items-center  gap-10">
           <Link href="/" className="cursor-pointer flex items-center">
             <Image
               src="/images/logo.png"
               alt="logo"
               width={100}
               height={100}
-              className="h-10 md:h-12 w-auto mr-2"
+              className="h-10 md:h-12 w-auto mr-2 "
               priority
             />
           </Link>
