@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import React, { useState } from "react";
@@ -30,18 +29,26 @@ const Navbar = () => {
     }
   };
 
+  const handleCategoryClick = (category: string) => {
+    localStorage.setItem("selectedCategory", category);
+    setShopOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  const categories = ["Serums", "Cleansers", "Moisturizers", "Masks"];
+
   return (
     <nav className="w-full bg-white sticky top-0 z-50 border-b border-gray-100 font-raleway">
       <div className="container mx-auto flex items-center justify-between py-4 px-6 md:px-10">
         {/* Left: Logo & Desktop Menu */}
-        <div className="flex items-center  gap-10">
+        <div className="flex items-center gap-10">
           <Link href="/" className="cursor-pointer flex items-center">
             <Image
               src="/images/logo.png"
               alt="logo"
               width={100}
               height={100}
-              className="h-10 md:h-12 w-auto mr-2 "
+              className="h-18 md:w-22  w-auto mr-2"
               priority
             />
           </Link>
@@ -55,10 +62,15 @@ const Navbar = () => {
               Browse <ChevronDown size={14} />
               {shopOpen && (
                 <div className="absolute top-full left-0 w-48 bg-white shadow-xl border border-gray-50 py-3 z-50">
-                  {["Serums", "Cleansers", "Moisturizers"].map((item) => (
-                    <p key={item} className="px-4 py-2 hover:bg-pink-50 hover:text-[#b06d72] transition cursor-pointer">
+                  {categories.map((item) => (
+                    <Link
+                      key={item}
+                      href="/all-products"
+                      onClick={() => handleCategoryClick(item)}
+                      className="block px-4 py-2 hover:bg-pink-50 hover:text-[#b06d72] transition"
+                    >
                       {item}
-                    </p>
+                    </Link>
                   ))}
                 </div>
               )}
@@ -118,9 +130,15 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 w-full bg-white border-b shadow-lg p-6 flex flex-col gap-6 z-40">
           <ul className="flex flex-col gap-4 text-[10px] font-bold uppercase tracking-widest text-gray-800">
-            {["Browse", "Collections", "About", "Contact"].map((item) => (
-              <li key={item} className="border-b pb-2 cursor-pointer">{item}</li>
+            {categories.map((item) => (
+              <li key={item}>
+                <Link href="/all-products" onClick={() => handleCategoryClick(item)}>
+                  {item}
+                </Link>
+              </li>
             ))}
+            <li><Link href="/aboutUs">About</Link></li>
+            <li><Link href="/contactUs">Contact</Link></li>
           </ul>
           <div className="flex flex-col gap-2">
             {user ? (
