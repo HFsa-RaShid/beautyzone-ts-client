@@ -97,11 +97,10 @@
 
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Autoplay } from "swiper/modules";
+import { Autoplay } from "swiper/modules"; 
 import Image from "next/image";
 import { Star, RefreshCw } from "lucide-react";
 import "swiper/css";
-import "swiper/css/pagination";
 import useAllReviews from "@/hooks/useAllReviews";
 
 const Testimonials: React.FC = () => {
@@ -129,38 +128,27 @@ const Testimonials: React.FC = () => {
         </button>
       </div>
 
-      {/* 🔽 ডটগুলোকে আরও নিচে নামানোর জন্য নেস্টেড CSS ক্লাস অ্যাড করা হয়েছে */}
-      <div className="container mx-auto px-6 relative [&_.swiper-pagination]:!bottom-[-15px]">
+      <div className="container mx-auto px-6">
         {reviews.length > 0 ? (
           <Swiper
-            modules={[Pagination, Autoplay]}
+            modules={[Autoplay]}
             spaceBetween={30}
             slidesPerView={1}
-            breakpoints={{ 768: { slidesPerView: 2 } }}
-            loop={true} // 🔄 স্লাইড কখনো শেষ হবে না, গোল চাকার মতো ঘুরবে
-            speed={8000} // 🐌 গতি কমানো হলো (৮ সেকেন্ড)। কার্ডগুলো এখন অনেক আস্তে ও স্মুথলি যাবে
-            pagination={{
-              clickable: true,
-              dynamicBullets: true,
-            }}
+            loop={true} // অবিরাম চলার জন্য লুপ ট্রু করা হয়েছে
+            speed={5000} // ৫ সেকেন্ড ধরে স্লাইডটি আস্তে আস্তে সরবে (বেশি ফাস্ট হবে না)
             autoplay={{
-              delay: 0, // ⏱️ কোনো থামাথামি বা ব্রেক ছাড়া অনবরত চলতে থাকবে
-              disableOnInteraction: false,
+              delay: 0, // কোনো থামাথামি ছাড়া অনবরত চলবে
+              disableOnInteraction: false, // ইউজার ক্লিক করলেও অটোপ্লে বন্ধ হবে না
+              pauseOnMouseEnter: true, // মাউস হোভার করলে কার্ড চলা থেমে যাবে
             }}
-            // 🛑 হুভার (Hover) করলে ১০০% গ্যারান্টিসহ স্টপ এবং স্টার্ট করার আসল ট্রিক:
-            onMouseEnter={(swiper) => swiper.autoplay.stop()}
-            onMouseLeave={(swiper) => swiper.autoplay.start()}
-            allowTouchMove={true}
-            className="pb-20 pt-4"
-            style={{
-              // @ts-ignore (ধাক্কাধাক্কি বন্ধ করে একদম সোজা লাইনে চালানোর জন্য)
-              "--swiper-wrapper-transition-timing-function": "linear",
+            breakpoints={{ 
+              768: { slidesPerView: 2 } 
             }}
+            className="linear-swiper pb-10" // CSS-এর জন্য ক্লাস যোগ করা হয়েছে
           >
-            {/* 💡 লুপ যেন নিখুঁতভাবে ঘোরে, তাই রিভিউর সংখ্যা কম থাকলে ডাবল করে দেখানোর ট্রিক */}
-            {(reviews.length < 4 ? [...reviews, ...reviews] : reviews).map((rev, index) => (
-              <SwiperSlide key={`${rev._id}-${index}`} className="py-2">
-                <div className="flex flex-col md:flex-row items-center gap-8 p-6 bg-gray-50 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 h-full">
+            {reviews.map((rev) => (
+              <SwiperSlide key={rev._id}>
+                <div className="flex flex-col md:flex-row items-center gap-8 p-6 bg-gray-50 rounded-2xl h-full">
                   {/* User Image */}
                   <div className="relative w-48 h-48 rounded-2xl overflow-hidden shrink-0">
                     <Image
@@ -183,7 +171,7 @@ const Testimonials: React.FC = () => {
                             i < rev.rating
                               ? "fill-[#d4a0a7] text-[#d4a0a7]"
                               : "text-gray-200"
-                          }
+                        }
                         />
                       ))}
                     </div>
