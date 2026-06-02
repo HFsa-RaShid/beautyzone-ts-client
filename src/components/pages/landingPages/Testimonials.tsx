@@ -97,7 +97,7 @@
 
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules"; 
+import { Autoplay } from "swiper/modules";
 import Image from "next/image";
 import { Star, RefreshCw } from "lucide-react";
 import "swiper/css";
@@ -111,7 +111,7 @@ const Testimonials: React.FC = () => {
   }
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-white overflow-hidden">
       <div className="text-center mb-12 relative">
         <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-2">
           {reviews.length}+ Happy Users
@@ -134,17 +134,18 @@ const Testimonials: React.FC = () => {
             modules={[Autoplay]}
             spaceBetween={30}
             slidesPerView={1}
-            loop={true} // অবিরাম চলার জন্য লুপ ট্রু করা হয়েছে
-            speed={5000} // ৫ সেকেন্ড ধরে স্লাইডটি আস্তে আস্তে সরবে (বেশি ফাস্ট হবে না)
+            loop={true} // অনবরত লুপ হবে
+            speed={6000} // ৫০০০-৬০০০ দিলে একদম পারফেক্ট স্মুথলি চলবে, বেশি ফাস্ট হবে name
+            allowTouchMove={false} // মাউস দিয়ে টেনে হিঁচড়ে ড্র্যাগ করা বন্ধ (স্পিড ড্রপ আটকাবে)
             autoplay={{
-              delay: 0, // কোনো থামাথামি ছাড়া অনবরত চলবে
-              disableOnInteraction: false, // ইউজার ক্লিক করলেও অটোপ্লে বন্ধ হবে না
-              pauseOnMouseEnter: true, // মাউস হোভার করলে কার্ড চলা থেমে যাবে
+              delay: 0, // কোনো পজ বা থামাথামি ছাড়া চলবে
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true, // হোভার করলে সাথে সাথে থেমে যাবে
             }}
             breakpoints={{ 
               768: { slidesPerView: 2 } 
             }}
-            className="linear-swiper pb-10" // CSS-এর জন্য ক্লাস যোগ করা হয়েছে
+            className="linear-swiper pb-10"
           >
             {reviews.map((rev) => (
               <SwiperSlide key={rev._id}>
@@ -171,7 +172,7 @@ const Testimonials: React.FC = () => {
                             i < rev.rating
                               ? "fill-[#d4a0a7] text-[#d4a0a7]"
                               : "text-gray-200"
-                        }
+                          }
                         />
                       ))}
                     </div>

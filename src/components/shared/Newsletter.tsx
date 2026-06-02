@@ -13,7 +13,7 @@ const Newsletter: React.FC = () => {
   };
 
   return (
-    <div className="py-20 bg-white text-center px-6">
+    <div className="pb-20 bg-white text-center px-6">
       <h2 className="text-3xl font-bold text-gray-800 mb-4 font-sans">
         Join Our Community
       </h2>
