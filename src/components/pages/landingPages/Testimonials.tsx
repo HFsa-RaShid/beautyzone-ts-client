@@ -97,10 +97,14 @@
 
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
+// এখানে FreeMode এবং Autoplay দুটোই ইম্পোর্ট করা হয়েছে
+import { Autoplay, FreeMode } from "swiper/modules"; 
 import Image from "next/image";
 import { Star, RefreshCw } from "lucide-react";
+
+// Swiper-এর প্রয়োজনীয় CSS ইম্পোর্ট
 import "swiper/css";
+import "swiper/css/free-mode"; 
 import useAllReviews from "@/hooks/useAllReviews";
 
 const Testimonials: React.FC = () => {
@@ -131,24 +135,29 @@ const Testimonials: React.FC = () => {
       <div className="container mx-auto px-6">
         {reviews.length > 0 ? (
           <Swiper
-            modules={[Autoplay]}
+            modules={[Autoplay, FreeMode]} // FreeMode যোগ করা হয়েছে
             spaceBetween={30}
             slidesPerView={1}
-            loop={true} // অনবরত লুপ হবে
-            speed={6000} // ৫০০০-৬০০০ দিলে একদম পারফেক্ট স্মুথলি চলবে, বেশি ফাস্ট হবে name
-            allowTouchMove={false} // মাউস দিয়ে টেনে হিঁচড়ে ড্র্যাগ করা বন্ধ (স্পিড ড্রপ আটকাবে)
+            loop={true} 
+            freeMode={{
+              enabled: true, // এটি স্লাইডকে কোনো নির্দিষ্ট গ্রিডে না আটকিয়ে ফ্রিলি চলতে দেয়
+              momentum: false,
+            }}
+            speed={5000} // ৭০০০ দিলে খুব শান্ত ও স্মুথলি চলবে। স্পিড বাড়াতে চাইলে কমাবেন (যেমন: ৫০০০)
+            allowTouchMove={false} 
             autoplay={{
-              delay: 0, // কোনো পজ বা থামাথামি ছাড়া চলবে
+              delay: 0, 
               disableOnInteraction: false,
-              pauseOnMouseEnter: true, // হোভার করলে সাথে সাথে থেমে যাবে
+              pauseOnMouseEnter: true, // হোভার করলে থামবে, সরালে আবার অবিরাম চলবে
             }}
             breakpoints={{ 
               768: { slidesPerView: 2 } 
             }}
             className="linear-swiper pb-10"
           >
-            {reviews.map((rev) => (
-              <SwiperSlide key={rev._id}>
+            {/* লুপ যেন স্মুথ হয়, তাই রিভিউ কম থাকলে একই ডেটা ডাবল করে দেখানো হচ্ছে */}
+            {(reviews.length < 5 ? [...reviews, ...reviews, ...reviews] : reviews).map((rev, index) => (
+              <SwiperSlide key={`${rev._id}-${index}`}>
                 <div className="flex flex-col md:flex-row items-center gap-8 p-6 bg-gray-50 rounded-2xl h-full">
                   {/* User Image */}
                   <div className="relative w-48 h-48 rounded-2xl overflow-hidden shrink-0">
