@@ -107,7 +107,7 @@ const Testimonials: React.FC = () => {
     return <div className="py-20 text-center animate-pulse">Loading Reviews...</div>;
   }
 
-  // Marquee নিখুঁত করার জন্য রিভিউ কম থাকলে ডেটা ডাবল-ত্রিপল করে নেওয়া হচ্ছে
+  // Marquee নিখুঁত করার জন্য রিভিউ কম থাকলে ডেটা ডাবল-ত্রিপল করে নেওয়া হচ্ছে
   const duplicatedReviews = 
     reviews.length > 0 
       ? [...reviews, ...reviews, ...reviews, ...reviews] 
@@ -131,63 +131,61 @@ const Testimonials: React.FC = () => {
         </button>
       </div>
 
-      <div className="w-full">
+      {/* মূল হোভার কন্টেইনার (w-full রাখা হয়েছে যেন কার্ডের যে কোনো জায়গায় মাউস নিলেই সাথে সাথে ডিটেক্ট করে) */}
+      <div className="w-full overflow-hidden group/marquee cursor-pointer">
         {reviews.length > 0 ? (
-          /* মূল কন্টেইনার - group-hover দিয়ে মাউস নিলে অ্যানিমেশন পজ করা হচ্ছে */
-          <div className="flex w-full overflow-hidden group">
-            <div 
-              className="flex gap-8 whitespace-nowrap group-hover:[animation-play-state:paused]"
-              style={{
-                animation: "marquee 25s linear infinite", // ২৫ সেকেন্ড লুপ স্পিড (কমাইলে ফাস্ট হবে, বাড়াইলে স্লো হবে)
-              }}
-            >
-              {/* ইনলাইন সিএসএস অ্যানিমেশন কিফ্রেম ইনজেক্ট করা হয়েছে এখানে */}
-              <style>{`
-                @keyframes marquee {
-                  0% { transform: translateX(0%); }
-                  100% { transform: translateX(-50%); }
-                }
-              `}</style>
+          <div 
+            className="flex gap-8 whitespace-nowrap transition-all duration-300 group-hover/marquee:[animation-play-state:paused]"
+            style={{
+              animation: "marquee 30s linear infinite", // স্পিড আরেকটু স্মুথ করতে ৩০সেকেন্ড করা হলো (প্রয়োজনে ২৫ করতে পারেন)
+            }}
+          >
+            {/* ইনলাইন সিএসএস অ্যানিমেশন কিফ্রেম */}
+            <style>{`
+              @keyframes marquee {
+                0% { transform: translateX(0%); }
+                100% { transform: translateX(-50%); }
+              }
+            `}</style>
 
-              {duplicatedReviews.map((rev, index) => (
-                <div 
-                  key={`${rev._id}-${index}`} 
-                  className="w-[450px] shrink-0 flex flex-col md:flex-row items-center gap-6 p-6 bg-gray-50 rounded-2xl select-none"
-                >
-                  {/* User Image */}
-                  <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden shrink-0">
-                    <Image
-                      src={rev.userPhoto}
-                      alt={rev.userName}
-                      fill
-                      className="object-cover"
-                      sizes="160px"
-                    />
-                  </div>
-
-                  {/* Review Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex gap-1 mb-3">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          size={14}
-                          className={
-                            i < rev.rating
-                              ? "fill-[#d4a0a7] text-[#d4a0a7]"
-                              : "text-gray-200"
-                          }
-                        />
-                      ))}
-                    </div>
-                    <p className="text-gray-600 italic mb-4 leading-relaxed whitespace-normal text-sm line-clamp-3">
-                      &quot;{rev.comment}&quot;
-                    </p>
-                    <h4 className="font-bold text-gray-800 text-base truncate">{rev.userName}</h4>
-                  </div>
+            {duplicatedReviews.map((rev, index) => (
+              <div 
+                key={`${rev._id}-${index}`} 
+                className="w-[450px] shrink-0 flex flex-col md:flex-row items-center gap-6 p-6 bg-gray-50 rounded-2xl select-none shadow-sm hover:shadow-md transition-shadow duration-300"
+              >
+                {/* User Image */}
+                <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden shrink-0">
+                  <Image
+                    src={rev.userPhoto}
+                    alt={rev.userName}
+                    fill
+                    className="object-cover"
+                    sizes="160px"
+                  />
                 </div>
-              ))}
-            </div>
+
+                {/* Review Content */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex gap-1 mb-3">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        size={14}
+                        className={
+                          i < rev.rating
+                            ? "fill-[#d4a0a7] text-[#d4a0a7]"
+                            : "text-gray-200"
+                        }
+                      />
+                    ))}
+                  </div>
+                  <p className="text-gray-600 italic mb-4 leading-relaxed whitespace-normal text-sm line-clamp-3">
+                    &quot;{rev.comment}&quot;
+                  </p>
+                  <h4 className="font-bold text-gray-800 text-base truncate">{rev.userName}</h4>
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <p className="text-center text-gray-400">No reviews found.</p>
