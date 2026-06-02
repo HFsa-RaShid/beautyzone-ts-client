@@ -26,7 +26,7 @@ const SkincarePhilosophy: React.FC = () => {
               </p>
             </div>
             <Link 
-              href="/about"
+              href="/aboutUs"
               className="inline-block mt-10 bg-white text-black px-10 py-3 rounded-full text-[11px] font-bold uppercase tracking-[0.2em] border border-transparent hover:border-black transition-all active:scale-95 shadow-sm"
             >
               About Us

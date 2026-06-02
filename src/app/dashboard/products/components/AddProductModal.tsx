@@ -58,7 +58,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose }) =>
         }
       }
 
-      // নির্দিষ্ট টাইপ নিশ্চিত করা হলো
+      
       const formattedData: ProductPayload = {
         name: data.name,
         category: data.category,
