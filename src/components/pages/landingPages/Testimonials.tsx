@@ -96,15 +96,8 @@
 "use client";
 
 import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-// এখানে FreeMode এবং Autoplay দুটোই ইম্পোর্ট করা হয়েছে
-import { Autoplay, FreeMode } from "swiper/modules"; 
 import Image from "next/image";
 import { Star, RefreshCw } from "lucide-react";
-
-// Swiper-এর প্রয়োজনীয় CSS ইম্পোর্ট
-import "swiper/css";
-import "swiper/css/free-mode"; 
 import useAllReviews from "@/hooks/useAllReviews";
 
 const Testimonials: React.FC = () => {
@@ -113,6 +106,12 @@ const Testimonials: React.FC = () => {
   if (isLoading) {
     return <div className="py-20 text-center animate-pulse">Loading Reviews...</div>;
   }
+
+  // Marquee নিখুঁত করার জন্য রিভিউ কম থাকলে ডেটা ডাবল-ত্রিপল করে নেওয়া হচ্ছে
+  const duplicatedReviews = 
+    reviews.length > 0 
+      ? [...reviews, ...reviews, ...reviews, ...reviews] 
+      : [];
 
   return (
     <section className="py-20 bg-white overflow-hidden">
@@ -132,47 +131,43 @@ const Testimonials: React.FC = () => {
         </button>
       </div>
 
-      <div className="container mx-auto px-6">
+      <div className="w-full">
         {reviews.length > 0 ? (
-          <Swiper
-            modules={[Autoplay, FreeMode]} // FreeMode যোগ করা হয়েছে
-            spaceBetween={30}
-            slidesPerView={1}
-            loop={true} 
-            freeMode={{
-              enabled: true, // এটি স্লাইডকে কোনো নির্দিষ্ট গ্রিডে না আটকিয়ে ফ্রিলি চলতে দেয়
-              momentum: false,
-            }}
-            speed={5000} // ৭০০০ দিলে খুব শান্ত ও স্মুথলি চলবে। স্পিড বাড়াতে চাইলে কমাবেন (যেমন: ৫০০০)
-            allowTouchMove={false} 
-            autoplay={{
-              delay: 0, 
-              disableOnInteraction: false,
-              pauseOnMouseEnter: true, // হোভার করলে থামবে, সরালে আবার অবিরাম চলবে
-            }}
-            breakpoints={{ 
-              768: { slidesPerView: 2 } 
-            }}
-            className="linear-swiper pb-10"
-          >
-            {/* লুপ যেন স্মুথ হয়, তাই রিভিউ কম থাকলে একই ডেটা ডাবল করে দেখানো হচ্ছে */}
-            {(reviews.length < 5 ? [...reviews, ...reviews, ...reviews] : reviews).map((rev, index) => (
-              <SwiperSlide key={`${rev._id}-${index}`}>
-                <div className="flex flex-col md:flex-row items-center gap-8 p-6 bg-gray-50 rounded-2xl h-full">
+          /* মূল কন্টেইনার - group-hover দিয়ে মাউস নিলে অ্যানিমেশন পজ করা হচ্ছে */
+          <div className="flex w-full overflow-hidden group">
+            <div 
+              className="flex gap-8 whitespace-nowrap group-hover:[animation-play-state:paused]"
+              style={{
+                animation: "marquee 25s linear infinite", // ২৫ সেকেন্ড লুপ স্পিড (কমাইলে ফাস্ট হবে, বাড়াইলে স্লো হবে)
+              }}
+            >
+              {/* ইনলাইন সিএসএস অ্যানিমেশন কিফ্রেম ইনজেক্ট করা হয়েছে এখানে */}
+              <style>{`
+                @keyframes marquee {
+                  0% { transform: translateX(0%); }
+                  100% { transform: translateX(-50%); }
+                }
+              `}</style>
+
+              {duplicatedReviews.map((rev, index) => (
+                <div 
+                  key={`${rev._id}-${index}`} 
+                  className="w-[450px] shrink-0 flex flex-col md:flex-row items-center gap-6 p-6 bg-gray-50 rounded-2xl select-none"
+                >
                   {/* User Image */}
-                  <div className="relative w-48 h-48 rounded-2xl overflow-hidden shrink-0">
+                  <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden shrink-0">
                     <Image
                       src={rev.userPhoto}
                       alt={rev.userName}
                       fill
                       className="object-cover"
-                      sizes="200px"
+                      sizes="160px"
                     />
                   </div>
 
                   {/* Review Content */}
-                  <div className="flex-1">
-                    <div className="flex gap-1 mb-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex gap-1 mb-3">
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
@@ -185,15 +180,15 @@ const Testimonials: React.FC = () => {
                         />
                       ))}
                     </div>
-                    <p className="text-gray-600 italic mb-6 leading-relaxed">
+                    <p className="text-gray-600 italic mb-4 leading-relaxed whitespace-normal text-sm line-clamp-3">
                       &quot;{rev.comment}&quot;
                     </p>
-                    <h4 className="font-bold text-gray-800">{rev.userName}</h4>
+                    <h4 className="font-bold text-gray-800 text-base truncate">{rev.userName}</h4>
                   </div>
                 </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+              ))}
+            </div>
+          </div>
         ) : (
           <p className="text-center text-gray-400">No reviews found.</p>
         )}
