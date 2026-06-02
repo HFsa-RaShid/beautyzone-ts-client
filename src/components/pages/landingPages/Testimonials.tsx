@@ -137,7 +137,7 @@ const Testimonials: React.FC = () => {
           <div 
             className="flex gap-8 whitespace-nowrap transition-all duration-300 group-hover/marquee:[animation-play-state:paused]"
             style={{
-              animation: "marquee 30s linear infinite", // স্পিড আরেকটু স্মুথ করতে ৩০সেকেন্ড করা হলো (প্রয়োজনে ২৫ করতে পারেন)
+              animation: "marquee 20s linear infinite",
             }}
           >
             {/* ইনলাইন সিএসএস অ্যানিমেশন কিফ্রেম */}
