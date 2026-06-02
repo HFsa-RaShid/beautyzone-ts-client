@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // "use client";
 
 // import React from "react";
@@ -93,10 +94,9 @@
 
 // export default Testimonials;
 
-
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import Image from "next/image";
@@ -107,6 +107,8 @@ import useAllReviews from "@/hooks/useAllReviews";
 
 const Testimonials: React.FC = () => {
   const { reviews, isLoading, refetch } = useAllReviews();
+  // 🎯 Swiper instance ট্র্যাক করার জন্য একটি রেফারেন্স
+  const swiperRef = useRef<any>(null);
 
   if (isLoading) {
     return <div className="py-20 text-center animate-pulse">Loading Reviews...</div>;
@@ -130,70 +132,77 @@ const Testimonials: React.FC = () => {
         </button>
       </div>
 
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-6 relative [&_.swiper-pagination]:!bottom-[-10px]">
         {reviews.length > 0 ? (
-          <Swiper
-            modules={[Pagination, Autoplay]}
-            spaceBetween={30}
-            slidesPerView={1}
-            breakpoints={{ 768: { slidesPerView: 2 } }}
-            loop={true} 
-            speed={5000} 
-            pagination={{ 
-              clickable: true,
-              dynamicBullets: true 
-            }}
-            autoplay={{
-              delay: 0, 
-              disableOnInteraction: false,
-              pauseOnMouseEnter: true, 
-            }}
-            
-            allowTouchMove={true}
-            className="pb-20 pt-4" 
-            style={{
-              // @ts-ignore (Swiper custom linear transition)
-              "--swiper-wrapper-transition-timing-function": "linear",
-            }}
+          <div
+          
+            onMouseEnter={() => swiperRef.current?.autoplay.stop()}
+            onMouseLeave={() => swiperRef.current?.autoplay.start()}
           >
-            {reviews.map((rev) => (
-              <SwiperSlide key={rev._id} className="py-2">
-                <div className="flex flex-col md:flex-row items-center gap-8 p-6 bg-gray-50 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300">
-                  {/* User Image */}
-                  <div className="relative w-48 h-48 rounded-2xl overflow-hidden shrink-0">
-                    <Image
-                      src={rev.userPhoto}
-                      alt={rev.userName}
-                      fill
-                      className="object-cover"
-                      sizes="200px"
-                    />
-                  </div>
-
-                  {/* Review Content */}
-                  <div className="flex-1">
-                    <div className="flex gap-1 mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          size={14}
-                          className={
-                            i < rev.rating
-                              ? "fill-[#d4a0a7] text-[#d4a0a7]"
-                              : "text-gray-200"
-                          }
-                        />
-                      ))}
+            <Swiper
+              modules={[Pagination, Autoplay]}
+              spaceBetween={30}
+              slidesPerView={1}
+              breakpoints={{ 768: { slidesPerView: 2 } }}
+              loop={true}
+              speed={5000}
+              onSwiper={(swiper) => {
+                swiperRef.current = swiper; 
+              }}
+              pagination={{
+                clickable: true,
+                dynamicBullets: true
+              }}
+              autoplay={{
+                delay: 0,
+                disableOnInteraction: false,
+              }}
+              allowTouchMove={true}
+              className="pb-16 pt-4" 
+              style={{
+                // @ts-ignore
+                "--swiper-wrapper-transition-timing-function": "linear",
+              }}
+            >
+              {reviews.map((rev) => (
+                <SwiperSlide key={rev._id} className="py-2">
+                  <div className="flex flex-col md:flex-row items-center gap-8 p-6 bg-gray-50 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300">
+                    {/* User Image */}
+                    <div className="relative w-48 h-48 rounded-2xl overflow-hidden shrink-0">
+                      <Image
+                        src={rev.userPhoto}
+                        alt={rev.userName}
+                        fill
+                        className="object-cover"
+                        sizes="200px"
+                      />
                     </div>
-                    <p className="text-gray-600 italic mb-6 leading-relaxed">
-                      &quot;{rev.comment}&quot;
-                    </p>
-                    <h4 className="font-bold text-gray-800">{rev.userName}</h4>
+
+                    {/* Review Content */}
+                    <div className="flex-1">
+                      <div className="flex gap-1 mb-4">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            size={14}
+                            className={
+                              i < rev.rating
+                                ? "fill-[#d4a0a7] text-[#d4a0a7]"
+                                : "text-gray-200"
+                            }
+                          />
+                        ))}
+                      </div>
+                      <p className="text-gray-600 italic mb-6 leading-relaxed">
+                        &quot;{rev.comment}&quot;
+                      </p>
+                      <h4 className="font-bold text-gray-800">{rev.userName}</h4>
+                    </div>
                   </div>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
         ) : (
           <p className="text-center text-gray-400">No reviews found.</p>
         )}
